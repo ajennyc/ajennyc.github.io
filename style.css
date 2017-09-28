@@ -10,7 +10,7 @@ body    {
     background-image: url("dragon.jpg");
 
     /* Set a specific height */
-    height: 500px; 
+    height: 550px; 
 
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
@@ -21,16 +21,16 @@ body    {
 #gameContainer{
     margin-left: auto;
     margin-right: auto;
-    width: 500px;
-    height: 500px;
+    width: 1000px;
+    height: 600px;
 }
 
 h1  {
     color: #7c2c23; 
-    font-family: 'Cinzel Decorative', cursive;}
+    font-family: 'Cinzel Decorative', bold;}
 p   {
     color: #7c2c23; 
-    font-family: 'Cinzel Decorative', cursive;
+    font-family: 'Cinzel Decorative', bold;
 }
 
 
