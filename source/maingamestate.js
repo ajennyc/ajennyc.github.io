@@ -1,3 +1,5 @@
+var leaves;
+
 var mainGameState = {};
 
 mainGameState.preload = function () {
@@ -15,13 +17,17 @@ mainGameState.preload = function () {
     game.load.audio('sound-asteroid-2', 'assets/audio/asteroid_hit_02.mp3');
     game.load.audio('sound-asteroid-3', 'assets/audio/asteroid_hit_03.mp3');
     game.load.audio('sound-death', 'assets/audio/final_boss_death_01.mp3');
-    game.load.image('particles','assets/images/asteroid-small-02.png');
+    game.load.image('particles','assets/images/leaf33.png');
     game.load.image('dragonTexture', 'assets/images/dragon.png');
     game.load.json('dragonMesh', 'assets/images/dragon.json');
+    game.load.image('leaf1', 'assets/images/leaf1.png');
+    game.load.image('leaf2', 'assets/images/leaf3.png');
+    
+    leaves = ['leaf1','leaf2'];
     
 };
 
-//---------------------------------------------------------------------
+//---------------------------------CREATE------------------------------------
 
 mainGameState.create = function () {
     var x = game.width*0.1;
@@ -34,7 +40,7 @@ mainGameState.create = function () {
     this.dragon = game.add.sprite(x, y, '');  
     
     var child = game.add.creature(0,0,'dragonTexture','dragonMesh');
-    child.scale.setTo(10.0);
+    child.scale.setTo(7.0);
     child.play(true);
     
     this.dragon.addChild(child);
@@ -50,6 +56,8 @@ mainGameState.create = function () {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.arcade.enable(this.dragon);
     this.cursors = game.input.keyboard.createCursorKeys();
+    this.dragon.body.setSize(90,50);
+    this.dragon.anchor.setTo(1,0.5);
     
 ////Music: 
     this.music = game.add.audio('background-music');
@@ -73,12 +81,12 @@ mainGameState.create = function () {
 //Astroids: 
     this.asteroidTimer = 2.0;
     this.asteroids = game.add.group();
-    
+
 ////Destroyed astroid:
     game.physics.startSystem(Phaser.Physics.ARCADE);
     this.emitter = game.add.emitter(0,0,100);
     this.emitter.makeParticles('particles');
-    this.emitter.gravity = 200;
+    this.emitter.gravity = 400;
     
 //Shooting:
     this.fireKey = game.input.keyboard.addKey(Phaser.Keyboard.Z);
@@ -147,7 +155,7 @@ mainGameState.create = function () {
     
 };
 
-//-----------------------------------------------------------------------
+//------------------------------UPDATE-----------------------------------------
 
 mainGameState.update = function () {
         
@@ -212,6 +220,7 @@ mainGameState.update = function () {
         }
     }
 
+
 //Shooting: 
     this.updatePlayerBullets();
     
@@ -231,40 +240,49 @@ mainGameState.update = function () {
 //Death: 
     if(this.playerLife < 0){
         game.state.start("GameOver");
+        this.music.stop();
     }
     
 };
 
-mainGameState.render = function() {
-    game.debug.body(this.dragon);
-}
+//----------------------------RENDER------------------------------------------
 
-//---------------------------------------------------------------------
+//mainGameState.render = function() {
+//    game.debug.body(this.dragon);
+////    for(var i = 0; i < this.asteroids.length; i++){
+////        game.debug.body(i);
+////    };
+//}
+
+//----------------------------ASTEROIDS-----------------------------------------
 
 mainGameState.spawnAsteroid = function (){
 
     var y = game.rnd.integerInRange(0, game.height);
 
-    var asteroid = game.add.sprite(game.width*1.1, y, 'asteroid');    
+    var asteroid = game.add.sprite(game.width*1.1, y, 'leaf2');    
     asteroid.anchor.setTo(0.5,0.5);
+//    asteroid.body.setSize(50,50);
 
     game.physics.arcade.enable(asteroid);
+
     asteroid.body.velocity.x = -game.rnd.integerInRange(100,300);
     asteroid.body.angularVelocity = -game.rnd.integerInRange(50,100);
-    
+
     this.asteroids.add(asteroid);
 
+    
     //check in console: mainGameState.asteroids.children : give # of asteroids.
 };
 
-//----------------------------------------------------------------------
+//--------------------------------BULLLETS--------------------------------------
 
 mainGameState.spawnPlayerBullet = function() {
     if (this.fireTimer < 0){
         this.fireTimer = 0.4;
         
         var bullet = game.add.sprite(this.dragon.x, this.dragon.y, 'player-bullet');    
-        bullet.anchor.setTo(1,0.5);
+        bullet.anchor.setTo(0.10,1);
         bullet.angle = 90;
         
         game.physics.arcade.enable(bullet);
@@ -278,7 +296,7 @@ mainGameState.spawnPlayerBullet = function() {
     
 };
 
-//------------------------------------------------------------------------
+//---------------------------PLAYER-BULLET---------------------------------------------
 
 mainGameState.updatePlayerBullets = function() {
     
@@ -299,7 +317,7 @@ mainGameState.updatePlayerBullets = function() {
 
 };
 
-//------------------------------------------------------------------------
+//-------------------------ASTEROID-BULLET-----------------------------------------------
 
 mainGameState.asteroidBulletCollision = function(object1, object2) {
     object1.pendingDestroy = true;
@@ -313,11 +331,11 @@ mainGameState.asteroidBulletCollision = function(object1, object2) {
 
 };
 
-//------------------------------------------------------------------------
+//--------------------------------PLAYER-COLLISION----------------------------------------
 
 mainGameState.astroidPlayerCollision = function(object1, object2){
     
-    if(object1.key.includes("asteroid")){
+    if(object1.key != null && object1.key.includes("asteroid")){
         object1.pendingDestroy = true;
         this.particleBurst(object1);
     }else{
@@ -330,7 +348,7 @@ mainGameState.astroidPlayerCollision = function(object1, object2){
     
 };
 
-//------------------------------------------------------------------------
+//--------------------------------PARTICLES-BURST----------------------------------------
 
 mainGameState.particleBurst = function(object) {
     

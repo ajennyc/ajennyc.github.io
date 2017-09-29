@@ -1,11 +1,12 @@
 var gameOverState = {}; 
 
 gameOverState.preload = function () {
-    
+
 };
 
 gameOverState.create = function () {
     var style = {font: "40px Cinzel Decorative", fontWeight: "bold", align: "center"};
+    
     
     this.death = game.add.text(game.width *0.5,game.height *0.5,"GAME OVER!", style);
     this.death.fixedToCamera = true; 
