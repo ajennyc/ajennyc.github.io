@@ -11,7 +11,7 @@ gameOverState.create = function () {
     this.death.fixedToCamera = true; 
     this.death.anchor.setTo(0.5,0.5);
     var grd = this.death.context.createLinearGradient(0,0,0,this.death.height);
-    grd.addColorStop(0, '#e82a04');   
+    grd.addColorStop(0, '#d92b04');   
     grd.addColorStop(1, '#e67958');
     this.death.fill = grd;
     
